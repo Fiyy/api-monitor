@@ -7,10 +7,14 @@ import { Globe, AlertTriangle, CheckCircle2, Clock } from "lucide-react"
 export function StatsCards() {
   const { data: user } = trpc.user.me.useQuery()
   const { data: apis } = trpc.api.list.useQuery()
+  const { data: alerts } = trpc.monitor.getAlerts.useQuery({
+    acknowledged: false,
+    limit: 100,
+  })
 
   const totalApis = apis?.length || 0
   const activeApis = apis?.filter((api) => api.enabled).length || 0
-  const alertsCount = 0 // TODO: Implement alerts count
+  const alertsCount = alerts?.length || 0
 
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
