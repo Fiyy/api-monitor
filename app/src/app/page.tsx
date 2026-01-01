@@ -1,65 +1,127 @@
-import Image from "next/image";
+import { getServerSession } from "next-auth"
+import { redirect } from "next/navigation"
+import { authOptions } from "@/lib/auth"
+import { Button } from "@/components/ui/button"
+import Link from "next/link"
 
-export default function Home() {
+export default async function Home() {
+  const session = await getServerSession(authOptions)
+
+  if (session) {
+    redirect("/dashboard")
+  }
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900 p-4">
+      <div className="max-w-4xl mx-auto text-center space-y-8">
+        <div className="space-y-4">
+          <div className="flex items-center justify-center mb-8">
+            <div className="bg-primary text-primary-foreground p-4 rounded-2xl">
+              <svg
+                className="w-12 h-12"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M13 10V3L4 14h7v7l9-11h-7z"
+                />
+              </svg>
+            </div>
+          </div>
+
+          <h1 className="text-5xl md:text-6xl font-bold tracking-tight">
+            Monitor Your API Changes
+            <br />
+            <span className="text-primary">Instantly</span>
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+            APIShift automatically detects changes in your API structure and
+            alerts you immediately. Never miss breaking changes again.
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <Button asChild size="lg" className="text-lg px-8">
+            <Link href="/login">Get Started Free</Link>
+          </Button>
+          <Button asChild variant="outline" size="lg" className="text-lg px-8">
+            <Link href="#features">Learn More</Link>
+          </Button>
         </div>
-      </main>
+
+        <div className="pt-12 grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
+          <div className="space-y-2">
+            <div className="bg-primary/10 text-primary p-3 rounded-lg w-fit">
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M13 10V3L4 14h7v7l9-11h-7z"
+                />
+              </svg>
+            </div>
+            <h3 className="text-lg font-semibold">Real-time Monitoring</h3>
+            <p className="text-muted-foreground">
+              Check your APIs automatically at custom intervals and get instant notifications.
+            </p>
+          </div>
+
+          <div className="space-y-2">
+            <div className="bg-primary/10 text-primary p-3 rounded-lg w-fit">
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                />
+              </svg>
+            </div>
+            <h3 className="text-lg font-semibold">Smart Diffing</h3>
+            <p className="text-muted-foreground">
+              See exactly what changed with detailed JSON schema comparisons.
+            </p>
+          </div>
+
+          <div className="space-y-2">
+            <div className="bg-primary/10 text-primary p-3 rounded-lg w-fit">
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+                />
+              </svg>
+            </div>
+            <h3 className="text-lg font-semibold">Multi-channel Alerts</h3>
+            <p className="text-muted-foreground">
+              Get notified via Email, Slack, Discord, or custom webhooks.
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
-  );
+  )
 }
