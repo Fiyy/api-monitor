@@ -16,21 +16,55 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { MoreVertical, ExternalLink, Edit, Trash2, Power } from "lucide-react"
+import { MoreVertical, ExternalLink, Edit, Trash2, Power, Plus, RefreshCw } from "lucide-react"
 import Link from "next/link"
 import { formatDistanceToNow } from "date-fns"
+import { useState } from "react"
+import { useToast } from "@/hooks/use-toast"
 
 export function ApiList() {
+  const [checkingId, setCheckingId] = useState<string | null>(null)
+  const { toast } = useToast()
   const { data: apis, isLoading } = trpc.api.list.useQuery()
   const utils = trpc.useUtils()
+
   const deleteMutation = trpc.api.delete.useMutation({
     onSuccess: () => {
       utils.api.list.invalidate()
     },
   })
+
   const updateMutation = trpc.api.update.useMutation({
     onSuccess: () => {
       utils.api.list.invalidate()
+    },
+  })
+
+  const checkMutation = trpc.monitor.checkApi.useMutation({
+    onSuccess: (data) => {
+      utils.api.list.invalidate()
+      setCheckingId(null)
+
+      if (data.hasChanges) {
+        toast({
+          title: "Changes detected!",
+          description: "Schema changes were found in this API.",
+          variant: "destructive",
+        })
+      } else {
+        toast({
+          title: "No changes detected",
+          description: "API schema is unchanged.",
+        })
+      }
+    },
+    onError: (error) => {
+      setCheckingId(null)
+      toast({
+        title: "Check failed",
+        description: error.message,
+        variant: "destructive",
+      })
     },
   })
 
@@ -172,6 +206,20 @@ export function ApiList() {
                 </span>
               </div>
             )}
+
+            <Button
+              variant="outline"
+              size="sm"
+              className="w-full mt-2"
+              onClick={() => {
+                setCheckingId(api.id)
+                checkMutation.mutate({ id: api.id })
+              }}
+              disabled={checkingId === api.id}
+            >
+              <RefreshCw className={`mr-2 h-4 w-4 ${checkingId === api.id ? "animate-spin" : ""}`} />
+              {checkingId === api.id ? "Checking..." : "Check Now"}
+            </Button>
           </CardContent>
         </Card>
       ))}
