@@ -1,0 +1,192 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String         @id @default(cuid())
+  email         String         @unique
+  name          String?
+  image         String?
+  emailVerified DateTime?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  apis          Api[]
+  subscription  Subscription?
+  notifications Notification[]
+  accounts      Account[]
+  sessions      Session[]
+
+  @@index([email])
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Subscription {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  plan      Plan     @default(FREE)
+  status    SubStatus @default(ACTIVE)
+
+  stripeCustomerId     String?
+  stripeSubscriptionId String?
+
+  currentPeriodStart DateTime?
+  currentPeriodEnd   DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Plan {
+  FREE
+  PRO
+  TEAM
+  LIFETIME
+}
+
+enum SubStatus {
+  ACTIVE
+  CANCELED
+  PAST_DUE
+  TRIALING
+}
+
+model Api {
+  id            String     @id @default(cuid())
+  userId        String
+  user          User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  name          String
+  url           String
+  method        HttpMethod @default(GET)
+  headers       Json?      @default("{}")
+
+  checkInterval Int        @default(1440)
+  lastSchema    Json?
+  lastCheckedAt DateTime?
+  nextCheckAt   DateTime?
+
+  enabled       Boolean    @default(true)
+
+  snapshots     ApiSnapshot[]
+  alerts        ChangeAlert[]
+
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  @@index([userId])
+  @@index([nextCheckAt])
+  @@index([enabled])
+}
+
+enum HttpMethod {
+  GET
+  POST
+  PUT
+  PATCH
+  DELETE
+}
+
+model ApiSnapshot {
+  id           String   @id @default(cuid())
+  apiId        String
+  api          Api      @relation(fields: [apiId], references: [id], onDelete: Cascade)
+
+  schema       Json
+  responseHash String
+  statusCode   Int      @default(200)
+  latencyMs    Int      @default(0)
+
+  checkedAt    DateTime @default(now())
+
+  @@index([apiId])
+  @@index([checkedAt])
+}
+
+model ChangeAlert {
+  id           String   @id @default(cuid())
+  apiId        String
+  api          Api      @relation(fields: [apiId], references: [id], onDelete: Cascade)
+
+  diffs        Json
+  severity     Severity @default(MEDIUM)
+
+  notifiedAt   DateTime @default(now())
+  acknowledged Boolean  @default(false)
+  acknowledgedAt DateTime?
+
+  @@index([apiId])
+  @@index([notifiedAt])
+}
+
+enum Severity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+model Notification {
+  id       String          @id @default(cuid())
+  userId   String
+  user     User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  type     NotificationType
+  config   Json
+  enabled  Boolean         @default(true)
+
+  createdAt DateTime       @default(now())
+
+  @@index([userId])
+}
+
+enum NotificationType {
+  EMAIL
+  SLACK
+  DISCORD
+  WEBHOOK
+}
