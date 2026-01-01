@@ -1,8 +1,6 @@
 import { z } from "zod"
 import { createTRPCRouter, protectedProcedure } from "@/server/trpc"
-import { fetchAndExtractSchema } from "@/lib/schema-extractor"
-import { compareSchemas, getOverallSeverity } from "@/lib/schema-diff"
-import { SchemaNode } from "@/lib/schema-extractor"
+import { checkApi as checkApiService } from "@/lib/monitoring-service"
 
 export const monitorRouter = createTRPCRouter({
   /**
@@ -11,6 +9,7 @@ export const monitorRouter = createTRPCRouter({
   checkApi: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
+      // Verify ownership
       const api = await ctx.prisma.api.findUnique({
         where: { id: input.id },
       })
@@ -19,63 +18,18 @@ export const monitorRouter = createTRPCRouter({
         throw new Error("API not found")
       }
 
-      // Fetch and extract schema
-      const { schema, statusCode, latencyMs, responseHash } =
-        await fetchAndExtractSchema(
-          api.url,
-          api.method,
-          (api.headers as Record<string, string>) || {}
-        )
+      // Use the monitoring service
+      const result = await checkApiService(input.id)
 
-      // Save snapshot
-      const snapshot = await ctx.prisma.apiSnapshot.create({
-        data: {
-          apiId: api.id,
-          schema: schema as any,
-          responseHash,
-          statusCode,
-          latencyMs,
-        },
-      })
-
-      // Compare with last schema if exists
-      let hasChanges = false
-      let changeAlert = null
-
-      if (api.lastSchema) {
-        const oldSchema = api.lastSchema as SchemaNode
-        const changes = compareSchemas(oldSchema, schema)
-
-        if (changes.length > 0) {
-          hasChanges = true
-          const severity = getOverallSeverity(changes)
-
-          // Create alert
-          changeAlert = await ctx.prisma.changeAlert.create({
-            data: {
-              apiId: api.id,
-              diffs: changes as any,
-              severity,
-            },
-          })
-        }
+      if (!result.success) {
+        throw new Error(result.error || "Check failed")
       }
-
-      // Update API with latest check info
-      await ctx.prisma.api.update({
-        where: { id: api.id },
-        data: {
-          lastSchema: schema as any,
-          lastCheckedAt: new Date(),
-          nextCheckAt: new Date(Date.now() + api.checkInterval * 60 * 1000),
-        },
-      })
 
       return {
         success: true,
-        hasChanges,
-        snapshot,
-        changeAlert,
+        hasChanges: result.hasChanges,
+        snapshot: result.snapshotId ? { id: result.snapshotId } : null,
+        changeAlert: result.alertId ? { id: result.alertId } : null,
       }
     }),
 

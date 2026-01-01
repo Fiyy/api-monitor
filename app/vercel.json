@@ -3,5 +3,11 @@
   "installCommand": "npm install --legacy-peer-deps",
   "git": {
     "deploymentEnabled": true
-  }
+  },
+  "crons": [
+    {
+      "path": "/api/cron/check-apis",
+      "schedule": "0 * * * *"
+    }
+  ]
 }
