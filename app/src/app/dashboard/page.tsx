@@ -1,6 +1,5 @@
 import { Metadata } from "next"
-import { getServerSession } from "next-auth"
-import { authOptions } from "@/lib/auth"
+import { auth } from "@/lib/auth"
 import { StatsCards } from "@/components/dashboard/stats-cards"
 import { RecentAlerts } from "@/components/dashboard/recent-alerts"
 import { QuickActions } from "@/components/dashboard/quick-actions"
@@ -11,7 +10,7 @@ export const metadata: Metadata = {
 }
 
 export default async function DashboardPage() {
-  const session = await getServerSession(authOptions)
+  const session = await auth()
 
   return (
     <div className="space-y-6">

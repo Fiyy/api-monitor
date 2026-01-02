@@ -1,6 +1,5 @@
 import { Metadata } from "next"
-import { getServerSession } from "next-auth"
-import { authOptions } from "@/lib/auth"
+import { auth } from "@/lib/auth"
 import {
   Card,
   CardContent,
@@ -17,7 +16,7 @@ export const metadata: Metadata = {
 }
 
 export default async function SettingsPage() {
-  const session = await getServerSession(authOptions)
+  const session = await auth()
 
   return (
     <div className="space-y-6">
