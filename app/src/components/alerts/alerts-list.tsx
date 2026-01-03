@@ -71,7 +71,7 @@ export function AlertsList() {
   }
 
   const renderAlertCard = (alert: any) => {
-    const changes = (alert.diffs as SchemaChange[]) || []
+    const changes = Array.isArray(alert.diffs) ? (alert.diffs as unknown as SchemaChange[]) : []
     const changeCount = changes.length
 
     return (
@@ -235,7 +235,7 @@ export function AlertsList() {
               <div>
                 <h4 className="font-semibold mb-3">Detected Changes</h4>
                 <div className="space-y-2">
-                  {(selectedAlert.diffs as SchemaChange[]).map((change, idx) => (
+                  {(Array.isArray(selectedAlert.diffs) ? (selectedAlert.diffs as unknown as SchemaChange[]) : []).map((change, idx) => (
                     <div
                       key={idx}
                       className="border rounded-lg p-3 bg-muted/50 space-y-1"

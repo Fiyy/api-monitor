@@ -64,7 +64,7 @@ export async function checkApi(apiId: string): Promise<CheckResult> {
     let alertId: string | undefined
 
     if (api.lastSchema) {
-      const oldSchema = api.lastSchema as SchemaNode
+      const oldSchema = api.lastSchema as unknown as SchemaNode
       const changes = compareSchemas(oldSchema, schema)
 
       if (changes.length > 0) {

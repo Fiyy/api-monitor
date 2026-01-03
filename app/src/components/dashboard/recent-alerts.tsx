@@ -76,7 +76,7 @@ export function RecentAlerts() {
         ) : (
           <div className="space-y-4">
             {alerts.map((alert) => {
-              const changes = Array.isArray(alert.diffs) ? (alert.diffs as SchemaChange[]) : []
+              const changes = Array.isArray(alert.diffs) ? (alert.diffs as unknown as SchemaChange[]) : []
               const changeCount = changes.length
 
               return (

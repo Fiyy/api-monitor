@@ -43,7 +43,7 @@ export const apiRouter = createTRPCRouter({
         name: z.string().min(1),
         url: z.string().url(),
         method: z.enum(["GET", "POST", "PUT", "PATCH", "DELETE"]).default("GET"),
-        headers: z.record(z.string()).optional(),
+        headers: z.record(z.string(), z.string()).optional(),
         checkInterval: z.number().min(60).default(1440),
       })
     )
@@ -54,7 +54,7 @@ export const apiRouter = createTRPCRouter({
           name: input.name,
           url: input.url,
           method: input.method,
-          headers: input.headers || {},
+          headers: input.headers as any || {},
           checkInterval: input.checkInterval,
         },
       })
@@ -67,13 +67,13 @@ export const apiRouter = createTRPCRouter({
         name: z.string().min(1).optional(),
         url: z.string().url().optional(),
         method: z.enum(["GET", "POST", "PUT", "PATCH", "DELETE"]).optional(),
-        headers: z.record(z.string()).optional(),
+        headers: z.record(z.string(), z.string()).optional(),
         checkInterval: z.number().min(60).optional(),
         enabled: z.boolean().optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const { id, ...data } = input
+      const { id, ...updateData } = input
 
       const api = await ctx.prisma.api.findUnique({
         where: { id },
@@ -85,7 +85,10 @@ export const apiRouter = createTRPCRouter({
 
       return await ctx.prisma.api.update({
         where: { id },
-        data,
+        data: {
+          ...updateData,
+          headers: updateData.headers as any,
+        },
       })
     }),
 
