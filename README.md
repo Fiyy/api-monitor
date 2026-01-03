@@ -1,65 +1,177 @@
-# APIShift - API结构变更监控服务
+# APIShift
 
-> 从0到上线到盈利的完整方案
+> Real-time API schema monitoring and change detection platform
 
-## 项目概述
+![Production](https://img.shields.io/badge/status-production-green)
+![Next.js](https://img.shields.io/badge/Next.js-16-black)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)
+![License](https://img.shields.io/badge/license-MIT-blue)
 
-**产品名称**: APIShift (或 DriftWatch / APIGuard)
+**Live**: [https://apishift.site](https://apishift.site)
 
-**一句话定位**: 监控第三方API结构变化，在你的代码崩溃前发出告警
+## Overview
 
-**目标用户**: 依赖第三方API的独立开发者和小团队
+APIShift automatically monitors third-party APIs for schema changes and alerts you before breaking changes affect your production systems. Stop discovering API changes through errors—detect them proactively.
+
+### Key Features
+
+- **Automatic Schema Detection**: Intelligently infers API response schemas
+- **Change Tracking**: Detects additions, removals, and type changes
+- **Smart Alerts**: Configurable severity levels (Critical, High, Medium, Low)
+- **Historical Snapshots**: Track API evolution over time
+- **Multi-Method Support**: GET, POST, PUT, PATCH, DELETE
+- **Custom Headers**: Support for authentication and custom headers
+- **Real-time Dashboard**: Monitor all APIs from a single interface
+
+## Quick Start
+
+### Prerequisites
+
+- Node.js 18+
+- PostgreSQL database (or Supabase account)
+- Vercel account (for deployment)
+
+### Local Development
+
+```bash
+# Clone the repository
+git clone https://github.com/Fiyy/api-monitor.git
+cd api-monitor/app
+
+# Install dependencies
+npm install --legacy-peer-deps
+
+# Configure environment variables
+cp .env.example .env
+# Edit .env with your credentials
+
+# Run database migrations
+npx prisma migrate dev
+
+# Start development server
+npm run dev
+```
+
+Visit `http://localhost:3000` to see the application.
+
+### Environment Variables
+
+```bash
+# Database
+DATABASE_URL="postgresql://..."
+
+# Authentication
+NEXTAUTH_SECRET="your-secret-key"
+NEXTAUTH_URL="http://localhost:3000"
+
+# OAuth Providers
+GITHUB_ID="your-github-oauth-id"
+GITHUB_SECRET="your-github-oauth-secret"
+GOOGLE_ID="your-google-oauth-id"          # Optional
+GOOGLE_SECRET="your-google-oauth-secret"  # Optional
+
+# Cron Security
+CRON_SECRET="your-cron-secret"
+```
+
+## Documentation
+
+| Document | Description |
+|----------|-------------|
+| [Architecture](./docs/ARCHITECTURE.md) | Technical design and system architecture |
+| [Deployment](./docs/DEPLOYMENT.md) | Production deployment guide |
+| [Development](./docs/DEVELOPMENT.md) | Local development setup |
+| [API Reference](./docs/API.md) | API endpoints and tRPC procedures |
+
+## Tech Stack
+
+**Frontend**
+- Next.js 16 (App Router)
+- React 19
+- TypeScript 5
+- Tailwind CSS
+- shadcn/ui
+
+**Backend**
+- tRPC (Type-safe APIs)
+- Prisma ORM
+- NextAuth.js (Authentication)
+- PostgreSQL (Supabase)
+
+**Infrastructure**
+- Vercel (Hosting & Serverless Functions)
+- Vercel Cron (Scheduled Checks)
+- Supabase (Database)
+
+## Project Structure
+
+```
+api-monitor/
+├── app/                    # Next.js application
+│   ├── src/
+│   │   ├── app/           # App router pages
+│   │   ├── components/    # React components
+│   │   ├── lib/           # Utilities and core logic
+│   │   ├── server/        # tRPC routers
+│   │   └── styles/        # Global styles
+│   ├── prisma/            # Database schema
+│   ├── public/            # Static assets
+│   └── vercel.json        # Vercel configuration
+└── docs/                  # Documentation
+```
+
+## Core Concepts
+
+### API Monitoring
+
+APIShift periodically fetches your configured APIs and extracts their response schemas. When a schema change is detected, the system:
+
+1. **Compares** the new schema with the last known schema
+2. **Identifies** additions, removals, and type changes
+3. **Categorizes** changes by severity
+4. **Creates** an alert in the dashboard
+5. **Notifies** via configured channels (email, webhooks, etc.)
+
+### Schema Inference
+
+The schema inference engine analyzes JSON responses and creates a structured representation of the data types and structure. It handles:
+
+- Primitive types (string, number, boolean, null)
+- Objects and nested structures
+- Arrays and array item types
+- Nullable fields
+
+### Change Detection
+
+Changes are categorized as:
+
+- **Added**: New fields or properties
+- **Removed**: Deleted fields (breaking change)
+- **Type Changed**: Field type modifications (breaking change)
+- **Nullable Changed**: Nullability modifications
+
+## Pricing Tiers
+
+| Plan | Price | APIs | Check Frequency | Features |
+|------|-------|------|-----------------|----------|
+| **Free** | $0/mo | 5 | Hourly | Basic monitoring |
+| **Pro** | $29/mo | 50 | Every 5 min | Advanced diff, webhooks |
+| **Team** | $99/mo | Unlimited | Real-time | Custom rules, team features |
+
+## Contributing
+
+We welcome contributions! Please see our [Contributing Guide](./CONTRIBUTING.md) for details.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
+
+## Support
+
+- **Documentation**: [docs/](./docs/)
+- **Issues**: [GitHub Issues](https://github.com/Fiyy/api-monitor/issues)
+- **Email**: support@apishift.site
 
 ---
 
-## 文档目录
-
-| 文档 | 说明 |
-|------|------|
-| [商业计划书](./docs/business-plan.md) | 市场分析、商业模式、财务预测 |
-| [技术架构](./architecture/technical-design.md) | 系统设计、技术选型、数据库设计 |
-| [MVP开发计划](./docs/mvp-roadmap.md) | 2周MVP开发详细任务分解 |
-| [上线清单](./docs/launch-checklist.md) | 从代码到收款的完整清单 |
-| [增长策略](./marketing/growth-strategy.md) | 获客、留存、变现策略 |
-
----
-
-## 核心价值主张
-
-```
-问题：第三方API静默变更导致生产事故
-     ↓
-现状：手动检查文档 / 等到出bug才发现
-     ↓
-方案：自动监控API响应结构，变更时即时告警
-     ↓
-价值：减少生产事故，节省调试时间
-```
-
----
-
-## 快速数据
-
-| 指标 | 数值 |
-|------|------|
-| 启动成本 | < $50 |
-| MVP开发周期 | 2周 |
-| 月运营成本@500用户 | $150 |
-| 目标月收入@500用户 | $600 |
-| 净利率 | 75%+ |
-
----
-
-## 执行路线图
-
-```
-Week 1-2: MVP开发
-    ↓
-Week 3: Beta发布 + 种子用户
-    ↓
-Week 4-6: 迭代优化 + 付费功能
-    ↓
-Week 7-8: 正式上线 + 首批付费用户
-    ↓
-Month 3+: 持续增长
-```
+**Built with ❤️ using Next.js and deployed on Vercel**
