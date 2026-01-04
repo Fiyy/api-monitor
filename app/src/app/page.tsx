@@ -2,6 +2,7 @@ import { redirect } from "next/navigation"
 import { auth } from "@/lib/auth"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
+import { HomePageStructuredData } from "@/lib/seo/structured-data"
 
 export default async function Home() {
   const session = await auth()
@@ -11,7 +12,9 @@ export default async function Home() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900 p-4">
+    <>
+      <HomePageStructuredData />
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900 p-4">
       <div className="max-w-4xl mx-auto text-center space-y-8">
         <div className="space-y-4">
           <div className="flex items-center justify-center mb-8">
@@ -122,5 +125,6 @@ export default async function Home() {
         </div>
       </div>
     </div>
+    </>
   )
 }

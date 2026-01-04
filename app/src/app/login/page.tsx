@@ -4,8 +4,20 @@ import { auth } from "@/lib/auth"
 import { LoginForm } from "@/components/auth/login-form"
 
 export const metadata: Metadata = {
-  title: "Login | APIShift",
-  description: "Sign in to your APIShift account",
+  title: "Login",
+  description: "Sign in to your APIShift account to monitor your APIs, track schema changes, and manage alerts.",
+  openGraph: {
+    title: "Login to APIShift",
+    description: "Access your API monitoring dashboard",
+    url: "https://www.apishift.site/login",
+  },
+  alternates: {
+    canonical: "https://www.apishift.site/login",
+  },
+  robots: {
+    index: false,
+    follow: true,
+  },
 }
 
 export default async function LoginPage() {
