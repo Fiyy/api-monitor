@@ -9,7 +9,8 @@ import {
 } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Check, CreditCard, Zap } from "lucide-react"
+import { Check, CreditCard, Zap, AlertCircle, Clock } from "lucide-react"
+import Link from "next/link"
 
 export const metadata: Metadata = {
   title: "Billing | APIShift",
@@ -27,6 +28,27 @@ export default async function BillingPage() {
           Manage your subscription and view billing history
         </p>
       </div>
+
+      {/* Coming Soon Notice */}
+      <Card className="border-blue-200 bg-blue-50 dark:border-blue-900 dark:bg-blue-950">
+        <CardContent className="pt-6">
+          <div className="flex gap-4">
+            <AlertCircle className="h-5 w-5 text-blue-600 dark:text-blue-400 mt-0.5 shrink-0" />
+            <div className="space-y-1">
+              <h3 className="font-semibold text-blue-900 dark:text-blue-100">
+                Payment System Coming Soon
+              </h3>
+              <p className="text-sm text-blue-800 dark:text-blue-200">
+                We're currently integrating Stripe payment processing to enable Pro and Team plan upgrades.
+                For now, you can enjoy all Free plan features. Interested in upgrading early?{" "}
+                <a href="mailto:sales@apishift.site" className="underline font-medium hover:text-blue-900 dark:hover:text-blue-50">
+                  Contact our sales team
+                </a>.
+              </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       <div className="grid gap-6 md:grid-cols-3">
         {/* Free Plan */}
@@ -99,8 +121,9 @@ export default async function BillingPage() {
               ))}
             </ul>
 
-            <Button className="w-full">
-              Upgrade to Pro
+            <Button className="w-full" disabled>
+              <Clock className="h-4 w-4 mr-2" />
+              Coming Soon
             </Button>
           </CardContent>
         </Card>
@@ -134,35 +157,79 @@ export default async function BillingPage() {
               ))}
             </ul>
 
-            <Button className="w-full" variant="outline">
-              Contact Sales
+            <Button className="w-full" variant="outline" asChild>
+              <a href="mailto:sales@apishift.site">
+                Contact Sales
+              </a>
             </Button>
           </CardContent>
         </Card>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Payment Method</CardTitle>
-          <CardDescription>
-            Manage your payment information
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="rounded-lg border border-dashed p-8 text-center">
-            <div className="mx-auto flex max-w-[420px] flex-col items-center justify-center text-center">
-              <CreditCard className="h-10 w-10 text-muted-foreground mb-4" />
-              <h3 className="text-lg font-semibold">No Payment Method</h3>
-              <p className="text-sm text-muted-foreground mt-2">
-                Add a payment method to upgrade your plan and unlock more features.
-              </p>
-              <Button className="mt-4" disabled>
-                Add Payment Method
-              </Button>
+      <div className="grid gap-6 md:grid-cols-2">
+        <Card>
+          <CardHeader>
+            <CardTitle>Payment Method</CardTitle>
+            <CardDescription>
+              Manage your payment information
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="rounded-lg border border-dashed p-8 text-center">
+              <div className="mx-auto flex max-w-[420px] flex-col items-center justify-center text-center">
+                <CreditCard className="h-10 w-10 text-muted-foreground mb-4" />
+                <h3 className="text-lg font-semibold">Payment System in Development</h3>
+                <p className="text-sm text-muted-foreground mt-2">
+                  Stripe integration is currently being set up. You'll be able to add payment methods soon.
+                </p>
+                <Button className="mt-4" disabled>
+                  <Clock className="h-4 w-4 mr-2" />
+                  Coming Soon
+                </Button>
+              </div>
             </div>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Current Usage</CardTitle>
+            <CardDescription>
+              Your plan limits and usage
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div>
+                <div className="flex justify-between text-sm mb-2">
+                  <span className="text-muted-foreground">APIs</span>
+                  <span className="font-medium">0 / 5</span>
+                </div>
+                <div className="h-2 bg-muted rounded-full overflow-hidden">
+                  <div className="h-full bg-primary" style={{ width: "0%" }} />
+                </div>
+              </div>
+              <div>
+                <div className="flex justify-between text-sm mb-2">
+                  <span className="text-muted-foreground">Check Frequency</span>
+                  <span className="font-medium">Hourly</span>
+                </div>
+              </div>
+              <div>
+                <div className="flex justify-between text-sm mb-2">
+                  <span className="text-muted-foreground">Data Retention</span>
+                  <span className="font-medium">7 days</span>
+                </div>
+              </div>
+              <div className="pt-4 border-t">
+                <Button className="w-full" variant="outline" asChild>
+                  <Link href="/pricing">View All Plans</Link>
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
 
       <Card>
         <CardHeader>

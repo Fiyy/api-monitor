@@ -1,0 +1,35 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background gradient -->
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f172a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1e293b;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#grad)"/>
+
+  <!-- Icon -->
+  <rect x="80" y="200" width="120" height="120" rx="20" fill="#1e293b"/>
+  <path d="M140 240L115 270h25v30l25-30h-25v-30z" fill="#60a5fa" stroke="#3b82f6" stroke-width="2"/>
+
+  <!-- Title -->
+  <text x="230" y="270" font-family="system-ui, -apple-system, sans-serif" font-size="64" font-weight="bold" fill="#f8fafc">
+    APIShift
+  </text>
+
+  <!-- Subtitle -->
+  <text x="230" y="320" font-family="system-ui, -apple-system, sans-serif" font-size="32" fill="#94a3b8">
+    Real-time API Schema Monitoring
+  </text>
+
+  <!-- Features -->
+  <text x="230" y="380" font-family="system-ui, -apple-system, sans-serif" font-size="24" fill="#cbd5e1">
+    ⚡ Instant change detection  •  🔔 Smart alerts  •  📊 Schema tracking
+  </text>
+
+  <!-- URL -->
+  <text x="230" y="460" font-family="system-ui, -apple-system, sans-serif" font-size="28" fill="#60a5fa">
+    www.apishift.site
+  </text>
+</svg>
