@@ -14,7 +14,40 @@ export default async function Home() {
   return (
     <>
       <HomePageStructuredData />
-      <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900 p-4">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900">
+      {/* Header */}
+      <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="container flex h-16 items-center justify-between px-4">
+          <Link href="/" className="flex items-center space-x-2">
+            <div className="bg-primary text-primary-foreground p-2 rounded-lg">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+            </div>
+            <span className="font-bold text-xl">APIShift</span>
+          </Link>
+          <nav className="flex items-center space-x-6">
+            <Link href="/features" className="text-sm font-medium hover:text-primary transition-colors">
+              Features
+            </Link>
+            <Link href="/pricing" className="text-sm font-medium hover:text-primary transition-colors">
+              Pricing
+            </Link>
+            <Link href="/blog" className="text-sm font-medium hover:text-primary transition-colors">
+              Blog
+            </Link>
+            <Link href="/docs" className="text-sm font-medium hover:text-primary transition-colors">
+              Docs
+            </Link>
+            <Button asChild size="sm">
+              <Link href="/login">Sign In</Link>
+            </Button>
+          </nav>
+        </div>
+      </header>
+
+      {/* Hero */}
+      <div className="flex flex-col items-center justify-center p-4 py-24">
       <div className="max-w-4xl mx-auto text-center space-y-8">
         <div className="space-y-4">
           <div className="flex items-center justify-center mb-8">
@@ -124,7 +157,8 @@ export default async function Home() {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+      </div>
     </>
   )
 }
