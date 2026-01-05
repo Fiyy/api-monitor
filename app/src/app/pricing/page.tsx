@@ -44,6 +44,7 @@ const plans = [
     price: "$29",
     period: "per month",
     description: "For professional developers and small teams",
+    trial: "14-day free trial",
     features: [
       "Up to 50 APIs",
       "Every 5 minutes checks",
@@ -55,8 +56,8 @@ const plans = [
       "API history tracking",
     ],
     limitations: [],
-    cta: "Coming Soon",
-    href: "#",
+    cta: "Start 14-Day Free Trial",
+    href: "/login?trial=pro",
     popular: true,
   },
   {
@@ -145,10 +146,15 @@ export default function PricingPage() {
               <div className="mb-6">
                 <h3 className="text-2xl font-bold mb-2">{plan.name}</h3>
                 <p className="text-muted-foreground text-sm mb-4">{plan.description}</p>
-                <div className="flex items-baseline">
+                <div className="flex items-baseline mb-2">
                   <span className="text-4xl font-bold">{plan.price}</span>
                   <span className="text-muted-foreground ml-2">/{plan.period}</span>
                 </div>
+                {(plan as any).trial && (
+                  <div className="inline-flex items-center px-3 py-1 rounded-full bg-green-100 dark:bg-green-950 text-green-700 dark:text-green-300 text-sm font-medium">
+                    🎉 {(plan as any).trial}
+                  </div>
+                )}
               </div>
 
               <Button asChild className="w-full mb-6" variant={plan.popular ? "default" : "outline"}>
@@ -185,9 +191,15 @@ export default function PricingPage() {
               </p>
             </div>
             <div>
-              <h3 className="text-lg font-semibold mb-2">Is there a free trial?</h3>
+              <h3 className="text-lg font-semibold mb-2">Is there a free trial for Pro plan?</h3>
               <p className="text-muted-foreground">
-                Our Free plan is available forever with no credit card required. You can upgrade to a paid plan at any time to unlock more features.
+                Yes! The Pro plan includes a 14-day free trial with full access to all Pro features. No credit card required to start. After the trial, you can choose to subscribe or downgrade to the Free plan.
+              </p>
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold mb-2">What happens after my Pro trial ends?</h3>
+              <p className="text-muted-foreground">
+                When your 14-day Pro trial ends, you'll be notified via email. You can choose to subscribe to the Pro plan for $29/month, or your account will automatically downgrade to the Free plan. No surprises, no automatic charges.
               </p>
             </div>
             <div>

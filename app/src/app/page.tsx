@@ -89,7 +89,7 @@ export default async function Home() {
               </div>
 
               {/* CTA Buttons */}
-              <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center mb-4">
                 <Button asChild size="lg" className="text-lg px-8 h-14">
                   <Link href="/login">
                     Start Monitoring Free
@@ -101,6 +101,18 @@ export default async function Home() {
                     See Real Disaster Stories
                   </Link>
                 </Button>
+              </div>
+
+              {/* Pro Trial Badge */}
+              <div className="flex justify-center mb-12">
+                <Link href="/pricing" className="group">
+                  <div className="inline-flex items-center px-4 py-2 rounded-full bg-gradient-to-r from-green-100 to-emerald-100 dark:from-green-950 dark:to-emerald-950 border border-green-200 dark:border-green-900 hover:shadow-md transition-all">
+                    <span className="text-sm font-medium text-green-700 dark:text-green-300">
+                      🎉 Try Pro free for 14 days
+                    </span>
+                    <ArrowRight className="w-4 h-4 ml-2 text-green-700 dark:text-green-300 group-hover:translate-x-1 transition-transform" />
+                  </div>
+                </Link>
               </div>
 
               {/* Social Proof Numbers */}
