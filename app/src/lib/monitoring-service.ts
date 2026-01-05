@@ -9,6 +9,7 @@ import { prisma } from "./prisma"
 import { fetchAndExtractSchema } from "./schema-extractor"
 import { compareSchemas, getOverallSeverity } from "./schema-diff"
 import { SchemaNode } from "./schema-extractor"
+import { sendNotifications } from "./notifications"
 
 export interface CheckResult {
   apiId: string
@@ -26,9 +27,10 @@ export interface CheckResult {
  */
 export async function checkApi(apiId: string): Promise<CheckResult> {
   try {
-    // Get API details
+    // Get API details with user information
     const api = await prisma.api.findUnique({
       where: { id: apiId },
+      include: { user: true },
     })
 
     if (!api || !api.enabled) {
@@ -81,6 +83,27 @@ export async function checkApi(apiId: string): Promise<CheckResult> {
         })
 
         alertId = alert.id
+
+        // Send notifications to user
+        try {
+          await sendNotifications(api.userId, {
+            apiName: api.name,
+            apiUrl: api.url,
+            severity: severity,
+            changes: changes.map((change) => ({
+              path: change.path,
+              type: change.type,
+              message: change.message,
+              oldValue: change.oldValue,
+              newValue: change.newValue,
+            })),
+            detectedAt: new Date(),
+          })
+          console.log(`Notifications sent for API ${api.name} (${api.id})`)
+        } catch (notifError) {
+          // Don't fail the check if notifications fail
+          console.error(`Failed to send notifications for API ${api.id}:`, notifError)
+        }
       }
     }
 
