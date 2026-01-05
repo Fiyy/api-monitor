@@ -4,6 +4,7 @@ import { userRouter } from "./user"
 import { monitorRouter } from "./monitor"
 import { subscriptionRouter } from "./subscription"
 import { notificationRouter } from "./notification"
+import { adminRouter } from "./admin"
 
 export const appRouter = createTRPCRouter({
   api: apiRouter,
@@ -11,6 +12,7 @@ export const appRouter = createTRPCRouter({
   monitor: monitorRouter,
   subscription: subscriptionRouter,
   notification: notificationRouter,
+  admin: adminRouter,
 })
 
 export type AppRouter = typeof appRouter
